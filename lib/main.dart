@@ -30,6 +30,7 @@ class MyHomePage extends StatelessWidget with GetItMixin {
   Widget build(BuildContext context) {
     final myCounterRef = watchOnly((AppModel x) => x.counter);
     final myListRef = watchOnly((AppModel x) => x.list);
+    final myListRefLisn = watchX((AppModel x) => x.listLisn);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Get It'),
@@ -47,7 +48,7 @@ class MyHomePage extends StatelessWidget with GetItMixin {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const SecondPage(),
+                      builder: (context) => SecondPage(),
                     ));
               },
               child: const Text('Second page'),
@@ -59,7 +60,15 @@ class MyHomePage extends StatelessWidget with GetItMixin {
                   title: Text(myListRef[index]),
                 ),
               ),
-            )
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: myListRefLisn.length,
+                itemBuilder: (context, index) => ListTile(
+                  title: Text(myListRefLisn[index]),
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -67,7 +76,7 @@ class MyHomePage extends StatelessWidget with GetItMixin {
         onPressed: () {
           getIt<AppModel>().addCounter();
           getIt<AppModel>().list.add('${DateTime.now()}');
-          //setState(() {});
+          getIt<AppModel>().listLisn.value.add('${DateTime.now()}');
         },
         tooltip: 'Increment',
         child: const Icon(Icons.add),
